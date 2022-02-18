@@ -1,7 +1,7 @@
 from django.urls import path
-from movies import views
+from showtimes import views
 
-# all paths start with /
+# all paths start with cinemas/
 urlpatterns = [
-
+    path('', views.Cinemas.as_view(), name='cinemas'),
 ]

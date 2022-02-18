@@ -1,3 +1,8 @@
-from django.shortcuts import render
+from showtimes import models
+from showtimes import serializers
+from rest_framework import generics
 
-# Create your views here.
+
+class Cinemas(generics.ListCreateAPIView):
+    queryset = models.Cinema.objects.all()
+    serializer_class = serializers.Cinema
