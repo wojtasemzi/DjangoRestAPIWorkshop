@@ -33,3 +33,12 @@ def add_cinema():
     """ Add cinema """
     cinema = models_showtimes.Cinema.objects.create(**fake_cinema())
     add_screening(cinema)
+
+
+def fake_screening_data():
+    """ Generate fake screening data """
+    cinema = models_showtimes.Cinema.objects.first()
+    movie = models_movies.Movie.objects.first()
+    return {'cinema': cinema.name,
+            'movie': movie.title,
+            'date': faker.date_time_between()}
