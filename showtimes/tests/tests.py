@@ -78,3 +78,10 @@ def test_screening_add(client, set_up):
             assert len(response.data[key]) == len(value)
         else:
             assert response.data[key] == value
+
+
+@pytest.mark.django_db
+def test_screening_get_list(client, set_up):
+    response = client.get(reverse('screenings'), {}, format='json')
+    assert response.status_code == 200
+    assert models_showtimes.Screening.objects.count() == len(response.data)
