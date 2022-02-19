@@ -53,3 +53,13 @@ def test_cinema_update(client, set_up):
     cinema_updated = models_showtimes.Cinema.objects.get(id=cinema.id)
     assert cinema_updated.name == new_name
     assert cinema_updated.city == new_city
+
+
+@pytest.mark.django_db
+def test_cinema_delete(client, set_up):
+    cinema = models_showtimes.Cinema.objects.first()
+    response = client.delete(f'/cinemas/{cinema.id}', {}, format='json')
+    #TODO:                reverse('cinema', {'id': cinema.id})
+    assert response.status_code == 204
+    cinemas_id = [cinema.id for cinema in models_showtimes.Cinema.objects.all()]
+    assert cinema.id not in cinemas_id
