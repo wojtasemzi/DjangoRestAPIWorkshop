@@ -12,3 +12,7 @@ class Cinema(generics.RetrieveUpdateDestroyAPIView):
     queryset = models.Cinema.objects.all()
     serializer_class = serializers.Cinema
     
+
+class Screenings(generics.ListCreateAPIView):
+    queryset = models.Screening.objects.all()
+    serializer_class = serializers.Screening
