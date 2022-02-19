@@ -25,3 +25,13 @@ def test_cinema_get_list(client, set_up):
     response = client.get(reverse('cinemas'), {}, format='json')
     assert response.status_code == 200
     assert models_showtimes.Cinema.objects.count() == len(response.data)
+
+
+@pytest.mark.django_db
+def test_cinema_get_detail(client, set_up):
+    cinema = models.Cinema.objects.first()
+    response = client.get(f'/cinemas/{cinema.id}', {}, format='json')
+    #TODO:                reverse('cinema', {'id': cinema.id})
+    assert response.status_code == 200
+    for field in ('name', 'city', 'movies'):
+        assert field in response.data
