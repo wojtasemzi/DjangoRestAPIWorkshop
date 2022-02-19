@@ -29,7 +29,7 @@ def test_cinema_get_list(client, set_up):
 
 @pytest.mark.django_db
 def test_cinema_get_detail(client, set_up):
-    cinema = models.Cinema.objects.first()
+    cinema = models_showtimes.Cinema.objects.first()
     response = client.get(f'/cinemas/{cinema.id}', {}, format='json')
     #TODO:                reverse('cinema', {'id': cinema.id})
     assert response.status_code == 200
