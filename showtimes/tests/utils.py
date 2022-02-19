@@ -27,3 +27,9 @@ def fake_cinema():
     """ Generate fake cinema data """
     return {'name': faker.name(),
             'city': faker.city()}
+
+
+def add_cinema():
+    """ Add cinema """
+    cinema = models_showtimes.Cinema.objects.create(**fake_cinema())
+    add_screening(cinema)
