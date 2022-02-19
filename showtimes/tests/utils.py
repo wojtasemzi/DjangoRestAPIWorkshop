@@ -21,3 +21,9 @@ def add_screening(cinema, number_of_movies=3):
                 cinema=cinema,
                 movie=movie,
                 date=faker.date_time_between())
+
+
+def fake_cinema():
+    """ Generate fake cinema data """
+    return {'name': faker.name(),
+            'city': faker.city()}
