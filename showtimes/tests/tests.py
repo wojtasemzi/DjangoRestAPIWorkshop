@@ -85,3 +85,13 @@ def test_screening_get_list(client, set_up):
     response = client.get(reverse('screenings'), {}, format='json')
     assert response.status_code == 200
     assert models_showtimes.Screening.objects.count() == len(response.data)
+
+
+@pytest.mark.django_db
+def test_screening_get_detail(client, set_up):
+    screening = models_showtimes.Screening.objects.first()
+    response = client.get(f'/cinemas/screenings/{screening.id}/', {}, format='json')
+    #TODO:                reverse('screening', {'pk':screening.id})
+    assert response.status_code == 200
+    for field in ('movie', 'cinema', 'date'):
+        assert field in response.data
