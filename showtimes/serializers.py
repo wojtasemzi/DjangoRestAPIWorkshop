@@ -15,11 +15,11 @@ class Cinema(serializers.ModelSerializer):
 
 
 class Screening(serializers.ModelSerializer):
-    cinemas = serializers.SlugRelatedField(slug_field='name',
+    cinema = serializers.SlugRelatedField(slug_field='name',
                                            queryset=models_showtimes.Cinema.objects.all())
-    movies = serializers.SlugRelatedField(slug_field='title',
+    movie = serializers.SlugRelatedField(slug_field='title',
                                           queryset=models_movies.Movie.objects.all())
 
     class Meta:
         model = models_showtimes.Screening
-        fields = ('id', 'movie', 'cinema', 'date')
+        fields = ('movie', 'cinema', 'date')
