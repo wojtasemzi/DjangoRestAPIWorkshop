@@ -30,8 +30,7 @@ def test_cinema_get_list(client, set_up):
 @pytest.mark.django_db
 def test_cinema_get_detail(client, set_up):
     cinema = models_showtimes.Cinema.objects.first()
-    response = client.get(f'/cinemas/{cinema.id}/', {}, format='json')
-    #TODO:                reverse('cinema', {'id': cinema.id})
+    response = client.get(reverse('cinema', args=(cinema.id,)), {}, format='json')
     assert response.status_code == 200
     for field in ('name', 'city', 'movies'):
         assert field in response.data
@@ -40,15 +39,15 @@ def test_cinema_get_detail(client, set_up):
 @pytest.mark.django_db
 def test_cinema_update(client, set_up):
     cinema = models_showtimes.Cinema.objects.first()
-    response = client.get(f'/cinemas/{cinema.id}/', {}, format='json')
-    #TODO:                reverse('cinema', {'id': cinema.id})
+    response = client.get(reverse('cinema', args=(cinema.id,)), {}, format='json')
     cinema_data = response.data
     new_name = 'new_name'
     new_city = 'new_city'
     cinema_data['name'] = new_name
     cinema_data['city'] = new_city
-    response = client.patch(f'/cinemas/{cinema.id}/', cinema_data, format='json')
-    #TODO:                reverse('cinema', {'id': cinema.id})
+    response = client.patch(reverse('cinema', args=(cinema.id,)),
+                            cinema_data,
+                            format='json')
     assert response.status_code == 200
     cinema_updated = models_showtimes.Cinema.objects.get(id=cinema.id)
     assert cinema_updated.name == new_name
@@ -58,8 +57,7 @@ def test_cinema_update(client, set_up):
 @pytest.mark.django_db
 def test_cinema_delete(client, set_up):
     cinema = models_showtimes.Cinema.objects.first()
-    response = client.delete(f'/cinemas/{cinema.id}/', {}, format='json')
-    #TODO:                reverse('cinema', {'id': cinema.id})
+    response = client.delete(reverse('cinema', args=(cinema.id,)), {}, format='json')
     assert response.status_code == 204
     cinemas_id = [cinema.id for cinema in models_showtimes.Cinema.objects.all()]
     assert cinema.id not in cinemas_id
@@ -90,8 +88,7 @@ def test_screening_get_list(client, set_up):
 @pytest.mark.django_db
 def test_screening_get_detail(client, set_up):
     screening = models_showtimes.Screening.objects.first()
-    response = client.get(f'/cinemas/screenings/{screening.id}/', {}, format='json')
-    #TODO:                reverse('screening', {'pk':screening.id})
+    response = client.get(reverse('screening', args=(screening.id,)), {}, format='json')
     assert response.status_code == 200
     for field in ('movie', 'cinema', 'date'):
         assert field in response.data
