@@ -18,3 +18,10 @@ def test_cinema_add(client, set_up):
             assert len(response.data[key]) == len(value)
         else:
             assert response.data[key] == value
+
+
+@pytest.mark.django_db
+def test_cinema_get_list(client, set_up):
+    response = client.get(reverse('cinemas'), {}, format='json')
+    assert response.status_code == 200
+    assert models_showtimes.Cinema.objects.count() == len(response.data)
