@@ -1,9 +1,9 @@
 from django.urls import reverse
 import pytest
 
+from movies import models as models_movies
 from showtimes import models as models_showtimes
-from .utils import fake_cinema
-
+from .utils import fake_cinema, fake_screening_data
 
 @pytest.mark.django_db
 def test_cinema_add(client, set_up):
@@ -30,7 +30,7 @@ def test_cinema_get_list(client, set_up):
 @pytest.mark.django_db
 def test_cinema_get_detail(client, set_up):
     cinema = models_showtimes.Cinema.objects.first()
-    response = client.get(f'/cinemas/{cinema.id}', {}, format='json')
+    response = client.get(f'/cinemas/{cinema.id}/', {}, format='json')
     #TODO:                reverse('cinema', {'id': cinema.id})
     assert response.status_code == 200
     for field in ('name', 'city', 'movies'):
@@ -40,14 +40,14 @@ def test_cinema_get_detail(client, set_up):
 @pytest.mark.django_db
 def test_cinema_update(client, set_up):
     cinema = models_showtimes.Cinema.objects.first()
-    response = client.get(f'/cinemas/{cinema.id}', {}, format='json')
+    response = client.get(f'/cinemas/{cinema.id}/', {}, format='json')
     #TODO:                reverse('cinema', {'id': cinema.id})
     cinema_data = response.data
     new_name = 'new_name'
     new_city = 'new_city'
     cinema_data['name'] = new_name
     cinema_data['city'] = new_city
-    response = client.patch(f'/cinemas/{cinema.id}', cinema_data, format='json')
+    response = client.patch(f'/cinemas/{cinema.id}/', cinema_data, format='json')
     #TODO:                reverse('cinema', {'id': cinema.id})
     assert response.status_code == 200
     cinema_updated = models_showtimes.Cinema.objects.get(id=cinema.id)
@@ -58,8 +58,23 @@ def test_cinema_update(client, set_up):
 @pytest.mark.django_db
 def test_cinema_delete(client, set_up):
     cinema = models_showtimes.Cinema.objects.first()
-    response = client.delete(f'/cinemas/{cinema.id}', {}, format='json')
+    response = client.delete(f'/cinemas/{cinema.id}/', {}, format='json')
     #TODO:                reverse('cinema', {'id': cinema.id})
     assert response.status_code == 204
     cinemas_id = [cinema.id for cinema in models_showtimes.Cinema.objects.all()]
     assert cinema.id not in cinemas_id
+
+
+@pytest.mark.django_db
+def test_screening_add(client, set_up):
+    screenings_before = models_showtimes.Screening.objects.count()
+    new_screening = fake_screening_data()
+    response = client.post(reverse('screenings'), new_screening, format='json')
+    assert response.status_code == 201
+    assert models_showtimes.Screening.objects.count() == screenings_before + 1
+    for key, value in new_screening.items():
+        assert key in response.data
+        if isinstance(value, list):
+            assert len(response.data[key]) == len(value)
+        else:
+            assert response.data[key] == value
