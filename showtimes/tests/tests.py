@@ -35,3 +35,21 @@ def test_cinema_get_detail(client, set_up):
     assert response.status_code == 200
     for field in ('name', 'city', 'movies'):
         assert field in response.data
+
+
+@pytest.mark.django_db
+def test_cinema_update(client, set_up):
+    cinema = models_showtimes.Cinema.objects.first()
+    response = client.get(f'/cinemas/{cinema.id}', {}, format='json')
+    #TODO:                reverse('cinema', {'id': cinema.id})
+    cinema_data = response.data
+    new_name = 'new_name'
+    new_city = 'new_city'
+    cinema_data['name'] = new_name
+    cinema_data['city'] = new_city
+    response = client.patch(f'/cinemas/{cinema.id}', cinema_data, format='json')
+    #TODO:                reverse('cinema', {'id': cinema.id})
+    assert response.status_code == 200
+    cinema_updated = models_showtimes.Cinema.objects.get(id=cinema.id)
+    assert cinema_updated.name == new_name
+    assert cinema_updated.city == new_city
