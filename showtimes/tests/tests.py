@@ -92,3 +92,24 @@ def test_screening_get_detail(client, set_up):
     assert response.status_code == 200
     for field in ('movie', 'cinema', 'date'):
         assert field in response.data
+
+
+@pytest.mark.django_db
+def test_screening_update(client, set_up):
+    screening = models_showtimes.Screening.objects.first()
+    response = client.get(reverse('screening', args=(screening.id,)), {}, format='json')
+    screening_data = response.data
+    new_movie = models_movies.Movie.objects.last()
+    new_cinema = models_showtimes.Cinema.objects.last()
+    new_date = '2021-05-29T18:46:56Z'
+    screening_data['movie'] = new_movie.title
+    screening_data['cinema'] = new_cinema.name
+    screening_data['date'] = new_date
+    response = client.patch(reverse('screening', args=(screening.id,)),
+                            screening_data,
+                            format='json')
+    assert response.status_code == 200
+    screening_updated = models_showtimes.Screening.objects.get(id=screening.id)
+    assert screening_updated.movie == new_movie
+    assert screening_updated.cinema == new_cinema
+    assert screening_updated.date == new_date
