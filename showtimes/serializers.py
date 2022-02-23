@@ -1,4 +1,3 @@
-from pyrsistent import field
 from rest_framework import serializers
 from movies import models as models_movies
 from showtimes import models as models_showtimes
